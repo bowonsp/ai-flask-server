@@ -23,3 +23,9 @@ def ask():
         return jsonify({"reply": reply})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# Tambahkan ini supaya Render bisa buka port dengan benar!
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    print(f"⚡ Running Flask on 0.0.0.0:{port}")
+    app.run(host='0.0.0.0', port=port)
