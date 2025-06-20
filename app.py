@@ -13,11 +13,11 @@ def ask():
         if not prompt:
             return jsonify({"error": "Prompt kosong."}), 400
 
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=prompt,
-            max_tokens=100,
-            temperature=0.7
+        response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=100,
+        temperature=0.7
         )
         reply = response["choices"][0]["text"].strip()
         return jsonify({"reply": reply})
