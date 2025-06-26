@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify
 from openai import OpenAI
 
-# ✅ PASTIKAN TIDAK ADA proxies=
+# ✅ TANPA ARGUMEN proxies
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ def ask():
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "Kamu adalah analis forex profesional."},
+            {"role": "system", "content": "Kamu adalah analis trading forex."},
             {"role": "user", "content": prompt}
         ]
     )
