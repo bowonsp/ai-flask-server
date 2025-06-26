@@ -2,10 +2,10 @@ from flask import Flask, request, jsonify
 import openai
 import os
 
-app = Flask(__name__)
+# Buat client secara aman
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", "YOUR_API_KEY"))
 
-# API Key OpenAI dari environment variable atau langsung string
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", "OPENAI_API_KEY"))
+app = Flask(__name__)
 
 @app.route('/ask', methods=['POST'])
 def ask():
@@ -16,11 +16,10 @@ def ask():
         if not prompt:
             return jsonify({"error": "Prompt kosong"}), 400
 
-        # ✅ Format baru OpenAI Python SDK v1.x
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Kamu adalah analis teknikal forex yang akurat dan ringkas."},
+                {"role": "system", "content": "Kamu adalah analis teknikal forex."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=300,
