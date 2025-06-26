@@ -1,37 +1,26 @@
-
-from flask import Flask, request, jsonify
-import openai
 import os
+from flask import Flask, request, jsonify
+from openai import OpenAI
 
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", "YOUR_API_KEY"))
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = Flask(__name__)
 
-@app.route('/ask', methods=['POST'])
+@app.route("/ask", methods=["POST"])
 def ask():
-    try:
-        data = request.get_json(force=True)
-        prompt = data.get("prompt", "").strip()
+    data = request.get_json()
+    prompt = data.get("prompt", "")
+    if not prompt:
+        return jsonify({"error": "Prompt kosong"}), 400
 
-        if not prompt:
-            return jsonify({"error": "Prompt kosong"}), 400
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "Kamu adalah analis forex."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    return jsonify({"reply": response.choices[0].message.content})
 
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "Kamu adalah analis teknikal forex."},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=300,
-            temperature=0.7
-        )
-
-        reply = response.choices[0].message.content.strip()
-        return jsonify({"reply": reply})
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
