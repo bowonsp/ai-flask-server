@@ -3,6 +3,7 @@ services:
     name: ai-flask-server
     env: python
     plan: free
+    runtime: python
     buildCommand: ""
     startCommand: python app.py
     envVars:
