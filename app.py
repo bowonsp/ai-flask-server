@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # Ganti dengan API Key kamu, atau ambil dari environment variable
-openai.api_key = os.getenv("OPENAI_API_KEY", "YOUR_OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY", "OPENAI_API_KEY")
 
 @app.route('/ask', methods=['POST'])
 def ask():
