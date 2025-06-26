@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify
 import openai
+import os
 
 app = Flask(__name__)
 
-# 🔑 Ganti dengan API key OpenAI kamu
-openai.api_key = "OPENAI_API_KEY"
+# Ganti dengan API Key kamu, atau ambil dari environment variable
+openai.api_key = os.getenv("OPENAI_API_KEY", "YOUR_OPENAI_API_KEY")
 
 @app.route('/ask', methods=['POST'])
 def ask():
@@ -15,9 +16,8 @@ def ask():
         if not prompt:
             return jsonify({"error": "Prompt kosong"}), 400
 
-        # ✅ Kirim prompt ke OpenAI (gunakan model sesuai kebutuhan)
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # atau "gpt-4" jika punya akses
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "Kamu adalah analis teknikal forex yang akurat dan ringkas."},
                 {"role": "user", "content": prompt}
@@ -32,5 +32,7 @@ def ask():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# Jalankan server di 0.0.0.0 agar Render bisa akses
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
