@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route("/ask", methods=["POST"])
 def ask():
-    data = request.get_json()
+    data = request.get_json(force=True)  # <= FIX PENTING
     prompt = data.get("prompt", "")
     if not prompt:
         return jsonify({"error": "Prompt kosong"}), 400
