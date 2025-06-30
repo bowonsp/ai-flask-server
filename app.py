@@ -1,4 +1,3 @@
-
 import os
 import openai
 from flask import Flask, request, jsonify
@@ -18,14 +17,13 @@ def ask():
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Kamu adalah analis forex. Jawaban harus menyebut TP dan SL."},
+                {"role": "system", "content": "Kamu adalah analis trading forex. Jawaban harus menyebutkan TP dan SL dengan jelas."},
                 {"role": "user", "content": prompt}
             ]
         )
 
         reply = response["choices"][0]["message"]["content"]
         return jsonify({"reply": reply})
-
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
