@@ -1,4 +1,3 @@
-# app.py final
 import os
 import openai
 from flask import Flask, request, jsonify
@@ -15,13 +14,17 @@ def ask():
         if not prompt:
             return jsonify({"error": "Prompt kosong"}), 400
 
+        system_prompt = (
+            "Kamu adalah asisten forex. "
+            "Jawaban hanya boleh dalam format: TP: x.xxxxx SL: x.xxxxx "
+            "(5 digit desimal, tidak boleh angka besar seperti 110.500). "
+            "Jangan beri penjelasan tambahan apapun."
+        )
+
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {
-                    "role": "system",
-                    "content": "Kamu adalah asisten analis forex. Selalu jawab hanya dalam format: TP: x.xxxxx SL: x.xxxxx. Jangan beri penjelasan atau tambahan apa pun."
-                },
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt}
             ]
         )
