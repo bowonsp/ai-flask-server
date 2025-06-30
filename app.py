@@ -17,7 +17,7 @@ def ask():
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Kamu adalah analis trading forex."},
+                {{"role": "system", "content": "Kamu adalah analis trading forex. Jawaban harus mengandung angka eksplisit untuk Take Profit (TP) dan Stop Loss (SL), seperti: TP: 1.1234 dan SL: 1.1200"}},
                 {"role": "user", "content": prompt}
             ]
         )
