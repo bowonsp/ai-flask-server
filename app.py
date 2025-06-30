@@ -2,7 +2,6 @@ import os
 import openai
 from flask import Flask, request, jsonify
 
-# Ambil API key dari environment
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = Flask(__name__)
@@ -18,7 +17,7 @@ def ask():
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Kamu adalah analis trading forex profesional. Jawaban harus menyebutkan TP dan SL dengan jelas."},
+                {"role": "system", "content": "Kamu adalah analis forex. Jawaban harus menyebut TP dan SL."},
                 {"role": "user", "content": prompt}
             ]
         )
