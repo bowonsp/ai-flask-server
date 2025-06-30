@@ -1,6 +1,6 @@
-from flask import Flask, request, jsonify
 import os
 from openai import OpenAI
+from flask import Flask, request, jsonify
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -8,9 +8,6 @@ app = Flask(__name__)
 
 @app.route("/ask", methods=["POST"])
 def ask():
-    if not request.is_json:
-        return jsonify({"error": "Content-Type harus application/json"}), 415
-
     data = request.get_json()
     prompt = data.get("prompt", "")
     if not prompt:
@@ -25,3 +22,6 @@ def ask():
     )
 
     return jsonify({"reply": response.choices[0].message.content})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
