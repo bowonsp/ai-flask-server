@@ -10,7 +10,7 @@ app = Flask(__name__)
 def ask():
     try:
         data = request.get_json(force=True)
-        prompt = data.get("prompt", "")
+        prompt = data.get("prompt", "").strip()
         if not prompt:
             return jsonify({"error": "Prompt kosong"}), 400
 
