@@ -17,7 +17,7 @@ def ask():
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Kamu adalah analis forex. Jawaban harus menyebut TP dan SL."},
+                {"role": "system", "content": "Kamu adalah analis trading forex. Jawaban HARUS menyebutkan TP dan SL dalam angka."},
                 {"role": "user", "content": prompt}
             ]
         )
