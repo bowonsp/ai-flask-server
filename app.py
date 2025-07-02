@@ -10,28 +10,20 @@ app = Flask(__name__)
 def ask():
     try:
         data = request.get_json(force=True)
-        prompt = data.get("prompt", "").strip()
+        prompt = data.get("prompt", "")
         if not prompt:
             return jsonify({"error": "Prompt kosong"}), 400
-
-        system_message = (
-            "Kamu adalah analis forex. Jawabanmu hanya boleh dalam format:\n"
-            "TP: x.xxxxx SL: x.xxxxx\n"
-            "Gunakan 5 digit desimal (misal: 1.10500), sesuai format harga forex standar seperti EURUSD.\n"
-            "Jangan sertakan penjelasan tambahan atau kalimat lainnya."
-        )
 
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Kamu adalah analis forex. Jawaban harus menyebut TP dan SL."},
+                {"role": "system", "content": "Kamu adalah analis forex. Jawab HANYA dalam format: TP: x.xxxxx SL: x.xxxxx tanpa penjelasan lain."},
                 {"role": "user", "content": prompt}
             ]
         )
 
         reply = response["choices"][0]["message"]["content"]
         return jsonify({"reply": reply})
-
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
