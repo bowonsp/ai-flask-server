@@ -38,8 +38,10 @@ def ask():
         return jsonify({"reply": clean_reply})
 
     except Exception as e:
-        # Jika ada error
-        return jsonify({"error": str(e)}), 500
+    import traceback
+    print("❌ ERROR SAAT MEMPROSES /ask")
+    traceback.print_exc()
+    return jsonify({"error": str(e)}), 500
 
 # Jalankan server
 if __name__ == "__main__":
