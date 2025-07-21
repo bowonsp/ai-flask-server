@@ -1,33 +1,27 @@
 from flask import Flask, request, jsonify
-import os
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return '✅ Flask AI Trading API is Running', 200
+    return "Flask server is running!"
 
 @app.route('/ask', methods=['POST'])
 def ask():
     try:
-        data = request.get_json(force=True)
-        prompt = data.get("prompt", "")
+        data = request.get_json()
+        if not data or 'prompt' not in data:
+            return jsonify({"error": "Prompt tidak ditemukan"}), 400
 
-        if not prompt:
-            return jsonify({"error": "Missing prompt"}), 400
+        prompt = data['prompt']
 
-        # Simulasi AI Response (ganti bagian ini dengan API OpenAI bila siap)
-        response_text = "TP: 1.12500 SL: 1.11500"
+        # Dummy response (ganti nanti dengan OpenAI call atau logic lainnya)
+        response_text = "TP: 1.12345 SL: 1.11111"
 
-        # Validasi format: harus ada "TP:" dan "SL:"
-        if "TP:" in response_text and "SL:" in response_text:
-            return response_text, 200
-        else:
-            return jsonify({"error": "Invalid response format"}), 500
+        return jsonify({"response": response_text})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 10000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=False, host='0.0.0.0', port=10000)
