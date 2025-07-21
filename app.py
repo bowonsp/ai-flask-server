@@ -11,11 +11,17 @@ app = Flask(__name__)
 
 @app.route('/ask', methods=['POST'])
 def ask():
-    raw_data = request.data.decode("utf-8")  # Dekode byte jadi string
-    print("📥 RAW BODY:", raw_data)          # ✅ Cetak isinya ke log
+    raw_data = request.data.decode("utf-8", errors="replace")
+    print("📥 RAW BODY:", raw_data)  # Tambahkan ini dulu
+
     try:
         data = request.get_json(force=True)
         prompt = data.get("prompt", "")
+        print("🧠 PROMPT:", prompt)
+        # ...
+    except Exception as e:
+        print("❌ JSON ERROR:", e)
+        return jsonify({"error": str(e)}), 400
 
         if not prompt:
             return jsonify({"error": "Prompt kosong"}), 400
