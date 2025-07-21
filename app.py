@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import os
 
 app = Flask(__name__)
 
@@ -17,3 +18,8 @@ def ask():
     
     except Exception as e:
         return jsonify(error=str(e)), 400
+
+# ========== BAGIAN WAJIB UNTUK RENDER ==========
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))  # Render menyimpan port di ENV
+    app.run(host="0.0.0.0", port=port)
