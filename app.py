@@ -1,51 +1,48 @@
-import os
-import openai
-import re
 from flask import Flask, request, jsonify
+import openai
+import os
 
-# Ambil API key dari environment variable
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-# Inisialisasi Flask
 app = Flask(__name__)
+
+openai.api_key = os.getenv("OPENAI_API_KEY") or "ISI_API_KEY_DISINI"
 
 @app.route('/ask', methods=['POST'])
 def ask():
-    raw_data = request.data.decode("utf-8", errors="replace")
-    print("📥 RAW BODY:", raw_data)  # Tambahkan ini dulu
-
     try:
-        data = request.get_json(force=True)
-        prompt = data.get("prompt", "")
-        print("🧠 PROMPT:", prompt)
-        # ...
-    except Exception as e:
-        print("❌ JSON ERROR:", e)
-        return jsonify({"error": str(e)}), 400
+        # Coba parsing JSON
+        try:
+            data = request.get_json(force=True)
+        except Exception as e:
+            print("❌ Gagal parsing JSON:", e)
+            return jsonify({"error": "Bad JSON format"}), 400
+
+        if not data or "prompt" not in data:
+            print("⚠️ Tidak ada prompt")
+            return jsonify({"error": "Missing 'prompt' in JSON"}), 400
+
+        prompt = data["prompt"].strip()
+        print("🧠 Prompt diterima:", prompt)
 
         if not prompt:
-            return jsonify({"error": "Prompt kosong"}), 400
+            return jsonify({"error": "Prompt kosong!"}), 400
 
+        # Kirim ke OpenAI
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "Kamu adalah analis forex. Jawab HANYA dalam format: TP: x.xxxxx SL: x.xxxxx tanpa penjelasan lain."},
-                {"role": "user", "content": prompt}
-            ]
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3,
+            max_tokens=100
         )
 
-        reply = response["choices"][0]["message"]["content"]
-        import re
-        clean_reply = re.sub(r"\s+", " ", reply).strip()
-        return jsonify({"reply": clean_reply})
+        reply = response.choices[0].message["content"].strip()
+        print("✅ Balasan GPT:", reply)
+
+        return jsonify({"reply": reply}), 200
 
     except Exception as e:
-        import traceback
-        print("❌ ERROR SAAT MEMPROSES /ask")
-        traceback.print_exc()
+        print("🔥 Exception utama:", str(e))
         return jsonify({"error": str(e)}), 500
 
-# Jalankan server
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Default port 5000
-    app.run(host="0.0.0.0", port=port)
+@app.route("/", methods=["GET"])
+def home():
+    return "🟢 Server Flask aktif", 200
