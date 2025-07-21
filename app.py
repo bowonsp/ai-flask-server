@@ -9,8 +9,10 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # Inisialisasi Flask
 app = Flask(__name__)
 
-@app.route("/ask", methods=["POST"])
+@app.route('/ask', methods=['POST'])
 def ask():
+    raw_data = request.data.decode("utf-8")  # Dekode byte jadi string
+    print("📥 RAW BODY:", raw_data)          # ✅ Cetak isinya ke log
     try:
         data = request.get_json(force=True)
         prompt = data.get("prompt", "")
